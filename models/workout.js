@@ -17,7 +17,10 @@ const WorkoutSchema = new Schema({
         type: String,
         trim: true,
       },
-      duration: Number,
+      duration: {
+        type: Number,
+        default: 0,
+      },
       reps: {
         type: Number,
         default: 0
@@ -35,11 +38,7 @@ const WorkoutSchema = new Schema({
         default: 0
       }
     }
-  ],
-  totalDuration: {
-    type: Number,
-    default: 0,
-  }
+  ]
 
 });
 
