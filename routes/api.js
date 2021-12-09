@@ -4,16 +4,10 @@ const router = require("express").Router();
 //get workouts
 router.get("/api/workouts", (req, res) => {
   Workout.aggregate([
-    {
-        $addFields: {
-            totalDuration: {
-                $sum: '$exercise.duration'
-            },
-        },
-    },
-])
+        {$addFields: {totalDuration: {$sum: '$exercises.duration'}}}
+    ])
     .then((workout) => {
-       
+       console.log(workout)
         res.json(workout)
     })
     .catch((e) => {
@@ -22,17 +16,16 @@ router.get("/api/workouts", (req, res) => {
 });
 
 router.put("/api/workouts/:id", (req, res) => {
-  Workout.findByIdAndUpdate(
-    { _id: params.id },
-    { $push: { exercises: body } },
-    { new: true }
-  )
-    .then(dbWorkout => {
-      res.json(dbWorkout);
+  Workout.findOne({ _id: req.params.id})
+  .then(workout => {
+    workout.exercises.push(req.body)
+    workout.save((err) => {
+      if (err) {
+        res.status(400).json(err);
+      }
+      res.json(workout);
     })
-    .catch((err) => {
-      res.status(400).res.json(err);
-    });
+  })
 });
 
 //create workout
